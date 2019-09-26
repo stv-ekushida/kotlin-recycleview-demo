@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.gson.GsonBuilder
+import com.google.gson.JsonParser
 import jp.st_ventures.kotlin_recycleview_demo.R
 import jp.st_ventures.kotlin_recycleview_demo.model.HomeFeed
 import kotlinx.android.synthetic.main.activity_main.*
@@ -24,13 +25,16 @@ class MainActivity : AppCompatActivity() {
 
         val url = "http://api.letsbuildthatapp.com/youtube/home_feed"
 
-        var request = Request.Builder().url(url).build()
+        val request = Request.Builder().url(url).build()
 
         val client = OkHttpClient()
         client.newCall(request).enqueue(object:Callback {
 
             override fun onResponse(call: Call, response: Response) {
-                var body = response.body()?.string()
+                val body = response.body()?.string()
+
+                val bodyJson = toPrettyFormat(body.toString())
+                print(bodyJson)
 
                 val gson = GsonBuilder().create()
                 val homeFeed = gson.fromJson(body, HomeFeed:: class.java)
@@ -45,6 +49,15 @@ class MainActivity : AppCompatActivity() {
                 print("Failed to execute request")
             }
         })
+    }
+
+
+    fun toPrettyFormat(jsonString: String): String {
+        val parser = JsonParser()
+        val json = parser.parse(jsonString).asJsonObject
+        val gson = GsonBuilder().setPrettyPrinting().create()
+
+        return gson.toJson(json)
     }
 }
 
