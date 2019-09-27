@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onResponse(call: Call, response: Response) {
                 val body = response.body()?.string()
+                println(body)
 
                 val bodyJson = toPrettyFormat(body.toString())
                 print(bodyJson)
