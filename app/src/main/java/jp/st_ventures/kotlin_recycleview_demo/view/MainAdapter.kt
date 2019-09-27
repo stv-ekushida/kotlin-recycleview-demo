@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import jp.st_ventures.kotlin_recycleview_demo.R
 import jp.st_ventures.kotlin_recycleview_demo.model.HomeFeed
+import jp.st_ventures.kotlin_recycleview_demo.model.Video
 import kotlinx.android.synthetic.main.video_row.view.*
 
 class MainAdapter(val homeFeed: HomeFeed): RecyclerView.Adapter<CustomViewHolder> (){
@@ -36,10 +37,17 @@ class MainAdapter(val homeFeed: HomeFeed): RecyclerView.Adapter<CustomViewHolder
 
         val channelProfileImageView = holder.view.imageView_chanel_thumbnail
         Picasso.with(holder.view.context).load(video.channel.profileImageUrl).into(channelProfileImageView)
+
+        holder?.video = video
     }
 }
 
-class CustomViewHolder(val view: View): RecyclerView.ViewHolder(view) {
+class CustomViewHolder(val view: View, var video: Video? = null): RecyclerView.ViewHolder(view) {
+
+    companion object {
+        val VIDEO_TITLE_KEY = "VIDEO_TITLE"
+        val VIDEO_ID_KEY = "VIDEO_ID"
+    }
 
     init {
 
@@ -47,6 +55,8 @@ class CustomViewHolder(val view: View): RecyclerView.ViewHolder(view) {
         view.setOnClickListener {
 
             val intent = Intent(view.context, CourseDetailActivity::class.java)
+            intent.putExtra(VIDEO_TITLE_KEY, video?.name)
+            intent.putExtra(VIDEO_ID_KEY, video?.id)
             view.context.startActivity(intent)
         }
     }
